@@ -10,7 +10,8 @@ import shutil
 input_dir = "/workspace/tensorrt/input/"
 tmp_dir = "tmp/"
 output_dir = "/workspace/tensorrt/output/"
-files = glob.glob(input_dir + "/**/*.mkv", recursive=True)
+files = glob.glob(input_dir + "/*", recursive=False)
+print(files)
 files.sort()
 
 for f in files:

@@ -168,13 +168,13 @@ def inference_clip(video_path="", clip=None):
     # UPSCALING WITH TENSORRT
     ######
     # vs-mlrt (you need to create the engine yourself, read the readme)
-    clip = core.trt.Model(
-        clip,
-        engine_path="/workspace/tensorrt/cugan.engine",
-        # tilesize=[854, 480],
-        overlap=[0, 0],
-        num_streams=4,
-    )
+    # clip = core.trt.Model(
+    #     clip,
+    #     engine_path="/workspace/tensorrt/cugan.engine",
+    #     # tilesize=[854, 480],
+    #     overlap=[0, 0],
+    #     num_streams=4,
+    # )
 
     # vs-mlrt (DPIR)
     # DPIR does need an extra channel
@@ -194,7 +194,7 @@ def inference_clip(video_path="", clip=None):
 
     # upscale_model_inference = PAN_inference(scale = 2, fp16 = True)
 
-    # upscale_model_inference = egvsr_inference(scale=4)
+    upscale_model_inference = egvsr_inference(scale=4)
 
     # CUGAN: kind_model="no_denoise", "conservative" or "denoise3x"
     # upscale_model_inference = cugan_inference(fp16=True,scale=2,kind_model="no_denoise")
@@ -210,7 +210,7 @@ def inference_clip(video_path="", clip=None):
 
     # upscale_model_inference = realbasicvsr_inference(fp16=True)
 
-    # clip = upscale_inference(upscale_model_inference, clip, tile_x=512, tile_y=512, tile_pad=10, pre_pad=0)
+    clip = upscale_inference(upscale_model_inference, clip, tile_x=512, tile_y=512, tile_pad=10, pre_pad=0)
 
     ######
     # external vs plugins

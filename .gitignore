@@ -6,3 +6,6 @@
 *.webm
 *.engine
 *.txt
+models
+input
+output

@@ -303,8 +303,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update && apt install wget git python3 python3.10 python3.10-venv python3.10-dev python3-pip python-is-python3 -y && \
     apt-get autoclean -y && apt-get autoremove -y && apt-get clean -y
 RUN pip3 install --upgrade pip
-RUN pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu118
-RUN git clone https://github.com/open-mmlab/mmcv --recursive && cd mmcv && MMCV_WITH_OPS=1 python setup.py build_ext && MMCV_WITH_OPS=1 python setup.py bdist_wheel
+RUN pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+RUN git clone https://github.com/open-mmlab/mmcv --recursive && cd mmcv && git checkout bfdd1f9c4281316f4f654672f0e9dbe1b0624ff0 && MMCV_WITH_OPS=1 python setup.py build_ext && MMCV_WITH_OPS=1 python setup.py bdist_wheel
 
 ############################
 # VSGAN
@@ -334,9 +334,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get purge --autoremove -y curl \
     && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    cuda-12-1 \
-    cuda-cudart-12-1 \
-    cuda-compat-12-1 \
+    cuda-11-8 \
+    cuda-cudart-11-8 \
+    cuda-compat-11-8 \
     && rm -rf /var/lib/apt/lists/*
 RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf \
     && echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
@@ -353,7 +353,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-ins
     libegl1-mesa-dev && \
     rm -rf /var/lib/apt/lists/*
 # may not be required
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-12.0/lib64:/usr/local/cuda-12.0/lib
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda-11.8/lib64:/usr/local/cuda-11.8/lib
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 ENV NVIDIA_DRIVER_CAPABILITIES all
 
@@ -364,8 +364,31 @@ RUN apt-get -y update && apt install wget fftw3-dev python3 python3.10 python3.1
 RUN pip3 install --upgrade pip
 
 # TensorRT
-RUN apt-get update -y && apt-get install libnvinfer8 libnvonnxparsers8 libnvparsers8 libnvinfer-plugin8 libnvinfer-dev libnvonnxparsers-dev \
-    libnvparsers-dev libnvinfer-plugin-dev python3-libnvinfer tensorrt python3-libnvinfer-dev -y && apt-get autoclean -y && apt-get autoremove -y && apt-get clean -y
+RUN apt-get update -y && apt-get install \
+    libnvinfer-headers-dev=8.6.0.12-1+cuda11.8 \
+    libnvinfer-headers-plugin-dev=8.6.0.12-1+cuda11.8 \
+    libnvinfer-vc-plugin8=8.6.0.12-1+cuda11.8 \
+    libnvinfer-lean-dev=8.6.0.12-1+cuda11.8 \
+    libnvinfer-dispatch-dev=8.6.0.12-1+cuda11.8 \
+    libnvinfer-vc-plugin-dev=8.6.0.12-1+cuda11.8 \
+    libnvinfer-lean8=8.6.0.12-1+cuda11.8 \
+    libnvinfer-dispatch8=8.6.0.12-1+cuda11.8 \
+    libnvinfer-bin=8.6.0.12-1+cuda11.8 \
+    libnvinfer-samples=8.6.0.12-1+cuda11.8 \
+    libnvinfer8=8.6.0.12-1+cuda11.8 \
+    libnvonnxparsers8=8.6.0.12-1+cuda11.8 \
+    libnvparsers8=8.6.0.12-1+cuda11.8 \
+    libnvinfer-plugin8=8.6.0.12-1+cuda11.8 \
+    libnvinfer-dev=8.6.0.12-1+cuda11.8 \
+    libnvonnxparsers-dev=8.6.0.12-1+cuda11.8 \
+    libnvparsers-dev=8.6.0.12-1+cuda11.8 \
+    libnvinfer-plugin-dev=8.6.0.12-1+cuda11.8 \
+    python3-libnvinfer=8.6.0.12-1+cuda11.8 \
+    python3-libnvinfer-lean=8.6.0.12-1+cuda11.8 \
+    python3-libnvinfer-dispatch=8.6.0.12-1+cuda11.8 \
+    tensorrt=8.6.0.12-1+cuda11.8 \
+    python3-libnvinfer-dev=8.6.0.12-1+cuda11.8 \
+    -y && apt-get autoclean -y && apt-get autoremove -y && apt-get clean -y
 # RUN pip install nvidia-pyindex && pip install tensorrt nvidia-tensorrt
 
 # cmake
@@ -394,7 +417,7 @@ RUN apt update -y && \
     # https://github.com/styler00dollar/mmcv/releases/download/1.7.1/mmcv_full-1.7.1-cp310-cp310-linux_x86_64.whl \
     *.whl \
     onnx onnxruntime-gpu && pip install pycuda && \
-    pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/nightly/cu118 --force-reinstall -U && \
+    pip3 install --pre torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118 --force-reinstall -U && \
     git clone https://github.com/cupy/cupy && cd cupy && git submodule update --init && pip install . && cd .. && rm -rf cupy && \
     git clone https://github.com/pytorch/TensorRT --recursive && cd TensorRT/py && python3 setup.py install --fx-only && cd .. && cd .. && rm -rf TensorRT && \
     apt-get autoclean -y && apt-get autoremove -y && apt-get clean -y && rm -rf dist *.whl
