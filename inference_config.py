@@ -173,7 +173,7 @@ def inference_clip(video_path="", clip=None):
         engine_path="/workspace/tensorrt/models/model.engine",
         tilesize=[426, 240],
         overlap=[0, 0],
-        num_streams=2,
+        num_streams=1,
     )
 
     # vs-mlrt (DPIR)
