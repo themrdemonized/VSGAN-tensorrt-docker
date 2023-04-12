@@ -32,7 +32,7 @@ for f in files:
         output_dir, os.path.splitext(os.path.basename(f))[0] + "_mux.mkv"
     )
 
-    common = "-thread_queue_size 100 -i pipe: -map 1 -map 0 -map -0:v -max_interleave_delta 0 -scodec copy -c:a copy -vf \"scale='min(1920,iw)':'-4'\""
+    common = "-thread_queue_size 100 -i pipe: -map 1 -map 0 -map -0:v -max_interleave_delta 0 -scodec copy -c:a copy -vf \"scale='min(1920,iw)':'-4':flags=lanczos\" -loglevel verbose"
 
     # only needed for dedup
     # os.system(f"vspipe /workspace/tensorrt/parse.py --arg source=\"{f}\" -p .")

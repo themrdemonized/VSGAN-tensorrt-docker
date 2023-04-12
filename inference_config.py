@@ -171,7 +171,7 @@ def inference_clip(video_path="", clip=None):
     clip = core.trt.Model(
         clip,
         engine_path="/workspace/tensorrt/models/model.engine",
-        tilesize=[426, 240],
+        # tilesize=[426, 240],
         overlap=[0, 0],
         num_streams=1,
     )
@@ -182,8 +182,8 @@ def inference_clip(video_path="", clip=None):
     # noise_level = clip.std.BlankClip(format=vs.GRAYS, color=strength / 100)
     # clip = core.trt.Model(
     #    [clip, noise_level],
-    #    engine_path="dpir.engine",
-    #    tilesize=[1280, 720],
+    #    engine_path="/workspace/tensorrt/models/dpir_drunet_color.engine",
+    #    tilesize=[720, 480],
     #    num_streams=2,
     # )
 

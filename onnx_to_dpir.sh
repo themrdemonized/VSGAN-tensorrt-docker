@@ -1,0 +1,1 @@
+trtexec --onnx=models/dpir_drunet_color.onnx --minShapes=input:1x4x8x8 --optShapes=input:1x4x720x1280 --maxShapes=input:1x4x1080x1920 --saveEngine=models/dpir_drunet_color.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT --skipInference

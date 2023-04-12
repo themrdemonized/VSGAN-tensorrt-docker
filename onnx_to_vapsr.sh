@@ -1,0 +1,1 @@
+trtexec --onnx=models/vapsr4x_opset16.onnx --minShapes=input:1x3x8x8 --optShapes=input:1x3x480x854 --maxShapes=input:1x3x720x1280 --saveEngine=models/vapsr4x_opset16.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT --skipInference
