@@ -74,7 +74,7 @@ for f in files:
 
     # x264 crf10 preset slow [31fps]
     # os.system(
-    #     f"vspipe -c y4m inference_batch.py --arg source={f} - | ffmpeg -y -i {f} {common} -crf 18 -preset slower {mux_path}"
+    #     f"vspipe -c y4m inference_batch.py --arg source={f} - | ffmpeg -y -i {f} {common} -crf 20 -preset slower {mux_path}"
     # )
 
     # hevc_nvenc
