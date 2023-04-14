@@ -8,7 +8,7 @@ model = SRVGGNetCompact(
     num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=16, upscale=4, act_type="prelu"
 )
 
-state_dict = torch.load("realesr-animevideov3.pth")
+state_dict = torch.load("EGVSR_iter420000.pth")
 
 if "params" in state_dict.keys():
     model.load_state_dict(state_dict["params"])

@@ -3,7 +3,7 @@ import torch
 
 print("Converting")
 
-model = ESRGAN("oldies.pth")
+model = ESRGAN("RealBasicVSR_x4.pth")
 model.eval().cuda()
 # https://github.com/onnx/onnx/issues/654
 dynamic_axes = {
