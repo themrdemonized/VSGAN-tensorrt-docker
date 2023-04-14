@@ -179,6 +179,8 @@ def inference_clip(video_path="", clip=None):
     # )
 
     # vs-mlrt (upscale) (you need to create the engine yourself, read the readme)
+    # realesr-general-wdn-x4v3_opset16.engine for already good quality input
+    # cugan_up4x-latest-conservative.engine for worse
     clip = core.trt.Model(
         clip,
         engine_path="/workspace/tensorrt/models/realesr-general-wdn-x4v3_opset16.engine",
