@@ -32,8 +32,15 @@ for f in files:
         output_dir, os.path.splitext(os.path.basename(f))[0] + "_mux.mkv"
     )
 
+    # common params to all upscales
+    common = "-thread_queue_size 100 -i pipe: -map 1 -map 0 -map -0:v -max_interleave_delta 0 -scodec copy -loglevel verbose "
+
     # bicubic for good quality, lanczos for blurry
-    common = "-thread_queue_size 100 -i pipe: -map 1 -map 0 -map -0:v -max_interleave_delta 0 -scodec copy -c:a copy -vf \"scale='min(1920,iw)':'-4':flags=bicubic\" -loglevel verbose"
+    # common += "-vf \"scale='min(1920,iw)':'-4':flags=lanczos\" "
+
+    # audio to opus or copy, choose either of those
+    # common += "-c:a libopus -b:a 128k "
+    common += "-c:a copy "
 
     # only needed for dedup
     # os.system(f"vspipe /workspace/tensorrt/parse.py --arg source=\"{f}\" -p .")
@@ -80,7 +87,7 @@ for f in files:
 
     # hevc_nvenc (qp 36 for already good, lower for worse)
     os.system(
-        f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -c:v hevc_nvenc -tag:v hvc1 -pix_fmt yuv420p -tier high -preset p7 -rc constqp -qp 36 -rc-lookahead 20 -b:v 0 \"{mux_path}\""
+        f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -c:v hevc_nvenc -tag:v hvc1 -pix_fmt yuv420p -tier high -preset p7 -rc constqp -qp 32 -rc-lookahead 20 -b:v 0 \"{mux_path}\""
     )
 
     # svt av1 (encoder has banding issues) [38fps]

@@ -103,12 +103,9 @@ def inference_clip(video_path="", clip=None):
     # COLORSPACE
     ###############################################
 
-    # convert colorspace
-    clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s="709")
-    # convert colorspace + resizing
-    # clip = vs.core.resize.Bicubic(
-    #    clip, width=1280, height=720, format=vs.RGBS, matrix_in_s="709"
-    # )
+    # convert (colorspace with optional resizing, choose either of those)
+    # clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s="709")
+    clip = vs.core.resize.Bicubic(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709")
 
     ###############################################
     # MODELS
@@ -183,7 +180,7 @@ def inference_clip(video_path="", clip=None):
     # cugan_up4x-latest-conservative.engine for worse
     clip = core.trt.Model(
         clip,
-        engine_path="/workspace/tensorrt/models/realesr-general-wdn-x4v3_opset16.engine",
+        engine_path="/workspace/tensorrt/models/cugan_up4x-latest-conservative.engine",
         # tilesize=[426, 240],
         overlap=[0, 0],
         num_streams=1,
