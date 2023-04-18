@@ -1,0 +1,1 @@
+trtexec --onnx=models/rife46_ensembleFalse_op18_sim.onnx --minShapes=input:1x8x8x8 --optShapes=input:1x8x480x854 --maxShapes=input:1x8x720x1280 --saveEngine=models/rife46_ensembleFalse_op18_sim.engine --tacticSources=+CUDNN,-CUBLAS,-CUBLAS_LT --skipInference --preview=+fasterDynamicShapes0805

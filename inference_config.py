@@ -104,8 +104,8 @@ def inference_clip(video_path="", clip=None):
     ###############################################
 
     # convert (colorspace with optional resizing, choose either of those)
-    # clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s="709")
-    clip = vs.core.resize.Bicubic(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709")
+    clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s="709")
+    # clip = vs.core.resize.Bicubic(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709")
 
     ###############################################
     # MODELS
@@ -155,9 +155,10 @@ def inference_clip(video_path="", clip=None):
     #    model_inference=model_inference, clip=clip, multi=2, metric_thresh=0.999
     # )
 
-    # clip = rife_trt(clip, multi = 2, scale = 1.0, device_id = 0, num_streams = 2, engine_path = "/workspace/tensorrt/rife46.engine")
+    # Double framerate
+    # clip = rife_trt(clip, multi = 2, scale = 1.0, device_id = 0, num_streams = 2, engine_path = "/workspace/tensorrt/models/rife46_ensembleTrue_op18_sim.engine")
 
-    # clip = cain_trt(clip, device_id = 0, num_streams = 4, engine_path = "/workspace/tensorrt/rvp.engine")
+    # clip = cain_trt(clip, device_id = 0, num_streams = 4, engine_path = "/workspace/tensorrt/models/rvpV2_op17_720p_sim.engine")
 
     # clip = gmfss_union(clip, num_streams=4, trt=True, factor_num=2, ensemble=False, sc=True, trt_cache_path="/workspace/tensorrt/")
 
@@ -180,7 +181,7 @@ def inference_clip(video_path="", clip=None):
     # cugan_up4x-latest-conservative.engine for worse
     clip = core.trt.Model(
         clip,
-        engine_path="/workspace/tensorrt/models/cugan_up4x-latest-conservative.engine",
+        engine_path="/workspace/tensorrt/models/realesr-general-wdn-x4v3_opset16.engine",
         # tilesize=[426, 240],
         overlap=[0, 0],
         num_streams=1,
@@ -290,14 +291,18 @@ def inference_clip(video_path="", clip=None):
     # clip = clip.resize.Spline16(format=vs.RGB24, matrix_in_s="470bg")
     # clip = vs_color_match(clip, original_clip, method="mkl")
 
-    ###
-    # Other
-    ###
-    # does not accept rgb clip, convert to yuv first
-    # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=2, type=0, depth=[16, 8, 8], chroma=0, opt=True, planes=[0,1,2], cplace="mpeg1")
-
-    ###############################################
-    # OUTPUT
-    ###############################################
+    # Output
     clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P8, matrix_s="709")
+
+    ####
+    # Post Proccess
+    ####
+    
+    # Sharpening
+    # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=2, type=0, depth=[16, 8, 8], chroma=0, opt=True, planes=[0,1,2], cplace="mpeg1")
+    # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=3, type=1)
+    # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=3, type=1)
+    # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=3, type=1)
+    clip = vs.core.cas.CAS(clip, sharpness=0.5)
+
     return clip
