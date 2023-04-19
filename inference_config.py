@@ -23,6 +23,8 @@ from src.rife_trt import rife_trt
 from src.cain_trt import cain_trt
 from src.GMFSS_Fortuna_union import GMFSS_Fortuna_union
 from src.GMFSS_Fortuna import GMFSS_Fortuna
+from vsgmfss_fortuna import gmfss_fortuna
+from vsdpir import dpir
 
 # upscale imports
 from src.upscale_inference import upscale_inference
@@ -106,12 +108,14 @@ def inference_clip(video_path="", clip=None):
     # convert (colorspace with optional resizing, choose either of those)
     clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s="709")
     # clip = vs.core.resize.Bicubic(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709")
+    # clip = vs.core.resize.Spline64(clip, format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
+
 
     ###############################################
     # MODELS
     ###############################################
     # in rare cases it can happen that image range is not 0-1 and that resulting in big visual problems, clamp input
-    clip = core.akarin.Expr(clip, "x 0 1 clamp")
+    # clip = core.akarin.Expr(clip, "x 0 1 clamp")
     # clip = core.std.Limiter(clip, max=1, planes=[0,1,2])
     # clip = scene_detect(clip, model_name="efficientnetv2_b0", thresh=0.98)
 
@@ -162,6 +166,9 @@ def inference_clip(video_path="", clip=None):
 
     # clip = gmfss_union(clip, num_streams=4, trt=True, factor_num=2, ensemble=False, sc=True, trt_cache_path="/workspace/tensorrt/")
 
+    # more information here: https://github.com/HolyWu/vs-gmfss_fortuna/blob/master/vsgmfss_fortuna/__init__.py
+    # clip = gmfss_fortuna(clip, num_streams=4, trt=True, factor_num=2, factor_den=1, model=1, ensemble=False, sc=True, trt_cache_path="/workspace/tensorrt/",)
+    
     ######
     # UPSCALING WITH TENSORRT, uncomment denoise either before or after upscale
     ######
@@ -291,6 +298,9 @@ def inference_clip(video_path="", clip=None):
     # clip = clip.resize.Spline16(format=vs.RGB24, matrix_in_s="470bg")
     # clip = vs_color_match(clip, original_clip, method="mkl")
 
+    # more information here: https://github.com/HolyWu/vs-dpir/blob/master/vsdpir/__init__.py
+    # clip = dpir(clip, num_streams = 4, nvfuser = False, cuda_graphs = False, trt = True, trt_cache_path = "/workspace/tensorrt/", task = "deblock", strength = 50, tile_w = 0, tile_h = 0, tile_pad= 8)
+    
     # Output
     clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P8, matrix_s="709")
 
