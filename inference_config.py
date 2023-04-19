@@ -56,6 +56,12 @@ core.std.LoadPlugin(path="/usr/local/lib/libscxvid.so")
 core.std.LoadPlugin(path="/usr/local/lib/libwwxd.so")
 core.std.LoadPlugin(path="/usr/local/lib/x86_64-linux-gnu/libawarpsharp2.so")
 
+def roundToUpperMod4(num):
+    num = int(num)
+    t = num % 4
+    if t == 0:
+        return num
+    return (num + 4 - t)
 
 def inference_clip(video_path="", clip=None):
     # ddfi is passing clip
@@ -160,7 +166,7 @@ def inference_clip(video_path="", clip=None):
     # )
 
     # Double framerate
-    # clip = rife_trt(clip, multi = 2, scale = 1.0, device_id = 0, num_streams = 2, engine_path = "/workspace/tensorrt/models/rife46_ensembleTrue_op18_sim.engine")
+    clip = rife_trt(clip, multi = 2, scale = 1.0, device_id = 0, num_streams = 2, engine_path = "/workspace/tensorrt/models/rife46_ensembleTrue_op18_sim.engine")
 
     # clip = cain_trt(clip, device_id = 0, num_streams = 4, engine_path = "/workspace/tensorrt/models/rvpV2_op17_720p_sim.engine")
 
@@ -302,7 +308,10 @@ def inference_clip(video_path="", clip=None):
     # clip = dpir(clip, num_streams = 4, nvfuser = False, cuda_graphs = False, trt = True, trt_cache_path = "/workspace/tensorrt/", task = "deblock", strength = 50, tile_w = 0, tile_h = 0, tile_pad= 8)
     
     # Output
-    clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P8, matrix_s="709")
+    if clip.width < 1920:
+        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P8, matrix_s="709")
+    else:
+        clip = vs.core.resize.Spline64(clip, format=vs.YUV420P8, matrix_s="709", width=1920, height=roundToUpperMod4((1920 / clip.width) * clip.height))
 
     ####
     # Post Proccess

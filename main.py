@@ -36,7 +36,7 @@ for f in files:
     common = "-thread_queue_size 100 -i pipe: -map 1 -map 0 -map -0:v -max_interleave_delta 0 -scodec copy -loglevel verbose "
 
     # bicubic for good quality, lanczos for blurry
-    common += "-vf \"scale='min(1920,iw)':'-4':flags=bicubic\" "
+    # common += "-vf \"scale='min(1920,iw)':'-4':flags=bicubic\" "
 
     # audio to opus or copy, choose either of those
     # common += "-c:a libopus -b:a 128k "
