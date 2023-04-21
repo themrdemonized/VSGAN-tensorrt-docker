@@ -166,7 +166,7 @@ def inference_clip(video_path="", clip=None):
     # )
 
     # Double framerate
-    clip = rife_trt(clip, multi = 2, scale = 1.0, device_id = 0, num_streams = 2, engine_path = "/workspace/tensorrt/models/rife46_ensembleTrue_op18_sim.engine")
+    # clip = rife_trt(clip, multi = 2, scale = 1.0, device_id = 0, num_streams = 2, engine_path = "/workspace/tensorrt/models/rife46_ensembleTrue_op18_sim.engine")
 
     # clip = cain_trt(clip, device_id = 0, num_streams = 4, engine_path = "/workspace/tensorrt/models/rvpV2_op17_720p_sim.engine")
 
@@ -192,6 +192,7 @@ def inference_clip(video_path="", clip=None):
     # vs-mlrt (upscale) (you need to create the engine yourself, read the readme)
     # realesr-general-wdn-x4v3_opset16.engine for already good quality input
     # cugan_up4x-latest-conservative.engine for worse
+    # sudo_shuffle_cugan_op18_clamped_9.584.969.engine is superfast but quality is questionable
     clip = core.trt.Model(
         clip,
         engine_path="/workspace/tensorrt/models/realesr-general-wdn-x4v3_opset16.engine",
@@ -311,7 +312,8 @@ def inference_clip(video_path="", clip=None):
     if clip.width < 1920:
         clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P8, matrix_s="709")
     else:
-        clip = vs.core.resize.Spline64(clip, format=vs.YUV420P8, matrix_s="709", width=1920, height=roundToUpperMod4((1920 / clip.width) * clip.height))
+        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P8, matrix_s="709", width=1920, height=roundToUpperMod4((1920 / clip.width) * clip.height))
+        # clip = vs.core.resize.Spline64(clip, format=vs.YUV420P8, matrix_s="709", width=1920, height=roundToUpperMod4((1920 / clip.width) * clip.height))
 
     ####
     # Post Proccess
@@ -322,6 +324,6 @@ def inference_clip(video_path="", clip=None):
     # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=3, type=1)
     # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=3, type=1)
     # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=3, type=1)
-    clip = vs.core.cas.CAS(clip, sharpness=0.5)
+    # clip = vs.core.cas.CAS(clip, sharpness=0.5)
 
     return clip
