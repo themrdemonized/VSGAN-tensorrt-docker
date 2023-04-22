@@ -33,7 +33,7 @@ from src.realbasicvsr import realbasicvsr_inference
 from src.egvsr import egvsr_inference
 from src.cugan import cugan_inference
 from vsbasicvsrpp import basicvsrpp
-from vsswinir import SwinIR
+from vsswinir import swinir
 from src.SRVGGNetCompact import compact_inference
 
 # from src.esrgan import ESRGAN_inference
@@ -246,7 +246,7 @@ def inference_clip(video_path="", clip=None):
     # clip = basicvsrpp(clip, model = 1, length = 15, cpu_cache = False, tile_w = 0, tile_h = 0, tile_pad = 16)
 
     # SwinIR
-    # clip = SwinIR(clip, task="lightweight_sr", scale=2)
+    # clip = swinir(clip, model=2)
 
     ###############################################
     # ncnn (works in docker, but only on linux, because wsl on windows does not support vulkan)
@@ -310,10 +310,10 @@ def inference_clip(video_path="", clip=None):
     
     # Output
     if clip.width < 1920:
-        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P8, matrix_s="709")
+        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709")
     else:
-        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P8, matrix_s="709", width=1920, height=roundToUpperMod4((1920 / clip.width) * clip.height))
-        # clip = vs.core.resize.Spline64(clip, format=vs.YUV420P8, matrix_s="709", width=1920, height=roundToUpperMod4((1920 / clip.width) * clip.height))
+        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=roundToUpperMod4((1920 / clip.width) * clip.height))
+        # clip = vs.core.resize.Spline64(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=roundToUpperMod4((1920 / clip.width) * clip.height))
 
     ####
     # Post Proccess
@@ -324,6 +324,6 @@ def inference_clip(video_path="", clip=None):
     # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=3, type=1)
     # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=3, type=1)
     # clip = core.warp.AWarpSharp2(clip, thresh=128, blur=3, type=1)
-    # clip = vs.core.cas.CAS(clip, sharpness=0.5)
+    clip = vs.core.cas.CAS(clip, sharpness=0.5)
 
     return clip
