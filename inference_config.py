@@ -111,10 +111,14 @@ def inference_clip(video_path="", clip=None):
     # COLORSPACE
     ###############################################
 
-    # convert (colorspace with optional resizing, choose either of those)
-    clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s="709")
-    # clip = vs.core.resize.Bicubic(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709")
+    # convert (colorspace with optional resizing, choose one of those)
+    # clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s="709")
+    # clip = vs.core.resize.Spline64(clip, format=vs.RGBS, matrix_in_s="709")
     # clip = vs.core.resize.Spline64(clip, format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
+
+    # clip = vs.core.resize.Bicubic(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709")
+    clip = vs.core.resize.Spline64(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709")
+    # clip = vs.core.resize.Spline64(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
 
 
     ###############################################
@@ -192,10 +196,10 @@ def inference_clip(video_path="", clip=None):
     # vs-mlrt (upscale) (you need to create the engine yourself, read the readme)
     # realesr-general-wdn-x4v3_opset16.engine for already good quality input
     # cugan_up4x-latest-conservative.engine for worse
-    # sudo_shuffle_cugan_op18_clamped_9.584.969.engine is superfast but quality is questionable
+    # sudo_shuffle_cugan_op18_clamped_9.584.969.engine is superfast 2x but quality is questionable. Requires transfer_in_s="linear" in resize function. Can be suitable for HD -> FHD/2K upscale
     clip = core.trt.Model(
         clip,
-        engine_path="/workspace/tensorrt/models/realesr-general-wdn-x4v3_opset16.engine",
+        engine_path="/workspace/tensorrt/models/cugan_up4x-latest-conservative.engine",
         # tilesize=[426, 240],
         overlap=[0, 0],
         num_streams=1,
