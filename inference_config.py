@@ -201,7 +201,7 @@ def inference_clip(video_path="", clip=None):
         clip,
         engine_path="/workspace/tensorrt/models/realesr-general-wdn-x4v3_opset16.engine",
         # tilesize=[426, 240],
-        overlap=[0, 0],
+        # overlap=[0, 0],
         num_streams=1,
     )
 

@@ -88,7 +88,7 @@ for f in files:
 
     # hevc_nvenc (qp 36 for already good, lower for worse)
     os.system(
-        f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -c:v hevc_nvenc -tag:v hvc1 -pix_fmt p010le -profile main10 -tier high -preset p7 -rc constqp -qp 33 -rc-lookahead 32 -b:v 0 \"{mux_path}\""
+        f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -c:v hevc_nvenc -tag:v hvc1 -pix_fmt p010le -profile main10 -tier high -preset p7 -rc constqp -qp 32 -rc-lookahead 32 -b:v 0 \"{mux_path}\""
     )
 
     # svt av1 (encoder has banding issues) [38fps]
