@@ -37,6 +37,7 @@ for f in files:
     common = "-thread_queue_size 100 -i pipe: -map 1 -map 0 -map -0:v -max_interleave_delta 0 -scodec copy -loglevel verbose "
 
     # bicubic for good quality, lanczos for blurry
+    # unused, perform resize in inference_config.py
     # common += "-vf \"scale='min(1920,iw)':'-4':flags=bicubic\" "
 
     # audio to opus or copy, choose either of those
@@ -88,7 +89,7 @@ for f in files:
 
     # hevc_nvenc (qp 36 for already good, lower for worse)
     os.system(
-        f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -c:v hevc_nvenc -tag:v hvc1 -pix_fmt p010le -profile main10 -tier high -preset p7 -rc constqp -qp 32 -rc-lookahead 32 -b:v 0 \"{mux_path}\""
+        f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -c:v hevc_nvenc -tag:v hvc1 -pix_fmt p010le -profile:v main10 -tier high -preset p7 -rc constqp -qp 34 -rc-lookahead 32 -b:v 0 \"{mux_path}\""
     )
 
     # svt av1 (encoder has banding issues) [38fps]

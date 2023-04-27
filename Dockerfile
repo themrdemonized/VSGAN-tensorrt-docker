@@ -614,6 +614,12 @@ RUN git clone --depth 1 https://aomedia.googlesource.com/aom && \
 
 COPY --from=ffmpeg-arch /home/makepkg/FFmpeg/ffmpeg /usr/local/bin/ffmpeg
 
+RUN git clone https://github.com/HomeOfVapourSynthEvolution/VapourSynth-CAS && cd VapourSynth-CAS && meson build && ninja -C build && ninja -C build install && cd .. && rm -rf VapourSynth-CAS
+RUN git clone https://github.com/styler00dollar/vs-gmfss_fortuna && cd vs-gmfss_fortuna && pip install . && cd .. && rm -rf vs-gmfss_fortuna
+RUN git clone https://github.com/styler00dollar/vs-dpir && cd vs-dpir && pip install . && cd .. && rm -rf vs-dpir
+RUN pip install vsutil
+RUN python -m vsswinir
+
 ENV CUDA_MODULE_LOADING=LAZY
 WORKDIR /workspace/tensorrt
 
