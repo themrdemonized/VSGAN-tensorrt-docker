@@ -619,6 +619,8 @@ RUN git clone https://github.com/styler00dollar/vs-gmfss_fortuna && cd vs-gmfss_
 RUN git clone https://github.com/styler00dollar/vs-dpir && cd vs-dpir && pip install . && cd .. && rm -rf vs-dpir
 RUN pip install vsutil
 RUN python -m vsswinir
+RUN apt-get autoclean -y && apt-get autoremove -y && apt-get clean -y
+RUN rm -rf /var/lib/apt/lists/*
 
 ENV CUDA_MODULE_LOADING=LAZY
 WORKDIR /workspace/tensorrt
