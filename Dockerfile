@@ -621,6 +621,7 @@ RUN pip install vsutil
 RUN python -m vsswinir
 RUN apt-get autoclean -y && apt-get autoremove -y && apt-get clean -y
 RUN rm -rf /var/lib/apt/lists/*
+RUN cd /usr/local/include/vapoursynth && git clone https://github.com/Kiyamou/VapourSynth-AreaResize && cd VapourSynth-AreaResize/AreaResize/ && mv AreaResize.cpp ../../AreaResize.cpp && cd ../../ && g++ -shared -fPIC -O2 AreaResize.cpp -o AreaResize.so && rm -f AreaResize.cpp && rm -rf VapourSynth-AreaResize
 
 ENV CUDA_MODULE_LOADING=LAZY
 WORKDIR /workspace/tensorrt

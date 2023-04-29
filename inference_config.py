@@ -55,6 +55,7 @@ core.std.LoadPlugin(path="/usr/local/lib/libvstrt.so")
 core.std.LoadPlugin(path="/usr/local/lib/libscxvid.so")
 core.std.LoadPlugin(path="/usr/local/lib/libwwxd.so")
 core.std.LoadPlugin(path="/usr/local/lib/x86_64-linux-gnu/libawarpsharp2.so")
+core.std.LoadPlugin(path="/usr/local/include/vapoursynth/AreaResize.so")
 
 def roundToUpperMod4(num):
     num = int(num)
@@ -62,6 +63,9 @@ def roundToUpperMod4(num):
     if t == 0:
         return num
     return (num + 4 - t)
+
+def getHeightforWidth(clip, targetWidth = 1920):
+    return roundToUpperMod4((targetWidth / clip.width) * clip.height)
 
 def inference_clip(video_path="", clip=None):
     # ddfi is passing clip
@@ -316,8 +320,15 @@ def inference_clip(video_path="", clip=None):
     if clip.width < 1920:
         clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709")
     else:
-        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=roundToUpperMod4((1920 / clip.width) * clip.height))
-        # clip = vs.core.resize.Spline64(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=roundToUpperMod4((1920 / clip.width) * clip.height))
+        # Area resize
+        clip = vs.core.area.AreaResize(clip, width=1920, height=getHeightforWidth(clip, 1920))
+        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709")
+
+        # Bicubic resize
+        # clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=getHeightforWidth(clip, 1920))
+        
+        # Spline64 resize
+        # clip = vs.core.resize.Spline64(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=getHeightforWidth(clip, 1920))
 
     ####
     # Post Proccess
