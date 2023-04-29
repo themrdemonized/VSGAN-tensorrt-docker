@@ -64,8 +64,8 @@ def roundToUpperMod4(num):
         return num
     return (num + 4 - t)
 
-def getHeightforWidth(clip, targetWidth = 1920):
-    return roundToUpperMod4((targetWidth / clip.width) * clip.height)
+def ARgetHeight(clip, width):
+    return roundToUpperMod4((clip.height / clip.width) * width)
 
 def inference_clip(video_path="", clip=None):
     # ddfi is passing clip
@@ -120,9 +120,9 @@ def inference_clip(video_path="", clip=None):
     # clip = vs.core.resize.Spline64(clip, format=vs.RGBS, matrix_in_s="709")
     # clip = vs.core.resize.Spline64(clip, format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
 
-    # clip = vs.core.resize.Bicubic(clip, width=480, height=360, format=vs.RGBS, matrix_in_s="709")
-    clip = vs.core.resize.Spline64(clip, width=480, height=360, format=vs.RGBS, matrix_in_s="709")
-    # clip = vs.core.resize.Spline64(clip, width=480, height=360, format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
+    # clip = vs.core.resize.Bicubic(clip, width=480, height=ARgetHeight(clip, 480), format=vs.RGBS, matrix_in_s="709")
+    clip = vs.core.resize.Spline64(clip, width=480, height=ARgetHeight(clip, 480), format=vs.RGBS, matrix_in_s="709")
+    # clip = vs.core.resize.Spline64(clip, width=480, height=ARgetHeight(clip, 480), format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
 
 
     ###############################################
@@ -322,14 +322,14 @@ def inference_clip(video_path="", clip=None):
         clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709")
     else:
         # Area resize - slow
-        # clip = vs.core.area.AreaResize(clip, width=1920, height=getHeightforWidth(clip, 1920))
+        # clip = vs.core.area.AreaResize(clip, width=1920, height=ARgetHeight(clip, 1920))
         # clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709")
 
         # Bicubic resize
-        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=getHeightforWidth(clip, 1920))
+        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=ARgetHeight(clip, 1920))
         
         # Spline64 resize
-        # clip = vs.core.resize.Spline64(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=getHeightforWidth(clip, 1920))
+        # clip = vs.core.resize.Spline64(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=ARgetHeight(clip, 1920))
 
     ####
     # Post Proccess
