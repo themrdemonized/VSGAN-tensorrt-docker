@@ -117,12 +117,12 @@ def inference_clip(video_path="", clip=None):
 
     # convert (colorspace with optional resizing, choose one of those)
     # clip = vs.core.resize.Bicubic(clip, format=vs.RGBS, matrix_in_s="709")
-    clip = vs.core.resize.Spline64(clip, format=vs.RGBS, matrix_in_s="709")
+    # clip = vs.core.resize.Spline64(clip, format=vs.RGBS, matrix_in_s="709")
     # clip = vs.core.resize.Spline64(clip, format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
 
-    # clip = vs.core.resize.Bicubic(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709")
-    # clip = vs.core.resize.Spline64(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709")
-    # clip = vs.core.resize.Spline64(clip, width=480, height=384, format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
+    # clip = vs.core.resize.Bicubic(clip, width=480, height=360, format=vs.RGBS, matrix_in_s="709")
+    clip = vs.core.resize.Spline64(clip, width=480, height=360, format=vs.RGBS, matrix_in_s="709")
+    # clip = vs.core.resize.Spline64(clip, width=480, height=360, format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
 
 
     ###############################################
@@ -200,10 +200,11 @@ def inference_clip(video_path="", clip=None):
     # vs-mlrt (upscale) (you need to create the engine yourself, read the readme)
     # realesr-general-wdn-x4v3_opset16.engine for already good quality input
     # cugan_up4x-latest-conservative.engine for worse
+    # cugan_up4x-latest-denoise3x.engine for denoising, can be too strong
     # sudo_shuffle_cugan_op18_clamped_9.584.969.engine is superfast 2x but quality is questionable. Requires transfer_in_s="linear" in resize function. Can be suitable for HD -> FHD/2K upscale
     clip = core.trt.Model(
         clip,
-        engine_path="/workspace/tensorrt/models/realesr-general-wdn-x4v3_opset16.engine",
+        engine_path="/workspace/tensorrt/models/cugan_up4x-latest-conservative.engine",
         # tilesize=[426, 240],
         # overlap=[0, 0],
         num_streams=1,
@@ -320,12 +321,12 @@ def inference_clip(video_path="", clip=None):
     if clip.width < 1920:
         clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709")
     else:
-        # Area resize
-        clip = vs.core.area.AreaResize(clip, width=1920, height=getHeightforWidth(clip, 1920))
-        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709")
+        # Area resize - slow
+        # clip = vs.core.area.AreaResize(clip, width=1920, height=getHeightforWidth(clip, 1920))
+        # clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709")
 
         # Bicubic resize
-        # clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=getHeightforWidth(clip, 1920))
+        clip = vs.core.resize.Bicubic(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=getHeightforWidth(clip, 1920))
         
         # Spline64 resize
         # clip = vs.core.resize.Spline64(clip, format=vs.YUV420P10, matrix_s="709", width=1920, height=getHeightforWidth(clip, 1920))
