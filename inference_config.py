@@ -121,6 +121,7 @@ def inference_clip(video_path="", clip=None):
     # clip = vs.core.resize.Spline64(clip, format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
 
     # clip = vs.core.resize.Bicubic(clip, width=480, height=ARgetHeight(clip, 480), format=vs.RGBS, matrix_in_s="709")
+    # clip = vs.core.resize.Bicubic(clip, width=480, height=ARgetHeight(clip, 480), format=vs.RGBS, matrix_in_s="709", filter_param_a=0.333, filter_param_b=0.333) # Mitchell
     clip = vs.core.resize.Spline64(clip, width=480, height=ARgetHeight(clip, 480), format=vs.RGBS, matrix_in_s="709")
     # clip = vs.core.resize.Spline64(clip, width=480, height=ARgetHeight(clip, 480), format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
 
@@ -129,7 +130,7 @@ def inference_clip(video_path="", clip=None):
     # MODELS
     ###############################################
     # in rare cases it can happen that image range is not 0-1 and that resulting in big visual problems, clamp input
-    # clip = core.akarin.Expr(clip, "x 0 1 clamp")
+    clip = core.akarin.Expr(clip, "x 0 1 clamp")
     # clip = core.std.Limiter(clip, max=1, planes=[0,1,2])
     # clip = scene_detect(clip, model_name="efficientnetv2_b0", thresh=0.98)
 
