@@ -82,6 +82,11 @@ for f in files:
     #   f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -crf 10 \"{mux_path}\""
     # )
 
+    # x264 crf10 preset medium [31fps]
+    # os.system(
+    #     f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -crf 24 -preset medium \"{mux_path}\""
+    # )
+
     # x264 crf10 preset slow [31fps]
     # os.system(
     #     f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -crf 24 -preset slow \"{mux_path}\""
@@ -89,7 +94,7 @@ for f in files:
 
     # hevc_nvenc (qp 36 for already good, lower for worse)
     os.system(
-        f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -c:v hevc_nvenc -tag:v hvc1 -pix_fmt p010le -profile:v main10 -tier high -preset p7 -rc constqp -qp 33 -rc-lookahead 32 -b:v 0 \"{mux_path}\""
+        f"vspipe -c y4m inference_batch.py --arg source=\"{f}\" - | ffmpeg -y -i \"{f}\" {common} -c:v hevc_nvenc -tag:v hvc1 -pix_fmt p010le -profile:v main10 -tier high -preset p7 -rc constqp -qp 32 -rc-lookahead 32 -b:v 0 \"{mux_path}\""
     )
 
     # svt av1 (encoder has banding issues) [38fps]
