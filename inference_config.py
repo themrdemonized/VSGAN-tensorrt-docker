@@ -125,6 +125,11 @@ def inference_clip(video_path="", clip=None):
     clip = vs.core.resize.Spline64(clip, width=480, height=ARgetHeight(clip, 480), format=vs.RGBS, matrix_in_s="709")
     # clip = vs.core.resize.Spline64(clip, width=480, height=ARgetHeight(clip, 480), format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
 
+    # clip = vs.core.resize.Bicubic(clip, width=960, height=ARgetHeight(clip, 960), format=vs.RGBS, matrix_in_s="709")
+    # clip = vs.core.resize.Bicubic(clip, width=960, height=ARgetHeight(clip, 960), format=vs.RGBS, matrix_in_s="709", filter_param_a=0.333, filter_param_b=0.333) # Mitchell
+    # clip = vs.core.resize.Spline64(clip, width=960, height=ARgetHeight(clip, 960), format=vs.RGBS, matrix_in_s="709")
+    # clip = vs.core.resize.Spline64(clip, width=960, height=ARgetHeight(clip, 960), format=vs.RGBS, matrix_in_s="709", transfer_in_s="linear")
+
 
     ###############################################
     # MODELS
@@ -202,7 +207,12 @@ def inference_clip(video_path="", clip=None):
     # realesr-general-wdn-x4v3_opset16.engine for already good quality input
     # cugan_up4x-latest-conservative.engine for worse
     # cugan_up4x-latest-denoise3x.engine for denoising, can be too strong
-    # sudo_shuffle_cugan_op18_clamped_9.584.969.engine is superfast 2x but quality is questionable. Requires transfer_in_s="linear" in resize function. Can be suitable for HD -> FHD/2K upscale
+
+    # 2x models
+    # cugan_pro-conservative-up2x_opset18_clamp_and_colorfix.engine
+    # cugan_up2x-latest-conservative_opset17.engine
+    # sudo_UltraCompact_2x_1.121.175_op18.engine is superfast 2x but quality is questionable
+    # sudo_shuffle_cugan_op18_clamped_9.584.969.engine is superfast 2x but quality is questionable. Requires transfer_in_s="linear" in resize function.
     clip = core.trt.Model(
         clip,
         engine_path="/workspace/tensorrt/models/cugan_up4x-latest-conservative.engine",
